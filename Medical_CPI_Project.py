@@ -141,19 +141,19 @@ lagged_cross_correlation(df)
 def classify_med_cpi_trends(df, window=6, n_clusters=3):
     df_pct = df[['Medical CPI']].pct_change().dropna() * 100
 
-    # Step 1: Rolling window features
+    # Rolling window features
     df_pct['Rolling Mean'] = df_pct['Medical CPI'].rolling(window).mean()
     df_pct['Rolling Volatility'] = df_pct['Medical CPI'].rolling(window).std()
     df_pct = df_pct.dropna()
 
-    # Step 2: Feature matrix for clustering
+    # Feature matrix for clustering
     features = df_pct[['Rolling Mean', 'Rolling Volatility']].copy()
 
-    # Step 3: KMeans clustering
+    # KMeans clustering
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     df_pct['Trend Cluster'] = kmeans.fit_predict(features)
 
-    # Step 4: Visualization
+    # Visualization
     plt.style.use('dark_background')
     plt.figure(figsize=(14, 6))
     for cluster in range(n_clusters):
@@ -172,7 +172,7 @@ def classify_med_cpi_trends(df, window=6, n_clusters=3):
 
 def summarize_trend_clusters(classified_df):
     summary = classified_df.groupby('Trend Cluster')[['Rolling Mean', 'Rolling Volatility']].mean()
-    print("\n📊 Regime Summary:\n")
+    print("\n Regime Summary:\n")
     print(summary.round(2))
 
 classified_df = classify_med_cpi_trends(df, window=6, n_clusters=3)
